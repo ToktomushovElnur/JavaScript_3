@@ -57,3 +57,42 @@ showTabsContent(currentIndex)
 
 setInterval(showNextTab, 3000)
 
+//convereter
+
+const somInput = document.querySelector('#som');
+const usdInput = document.querySelector('#usd');
+const eurInput = document.querySelector('#eur');
+
+const converter = (element, targetElement, targetElement2, type) => {
+    element.oninput = () => {
+        const request = new XMLHttpRequest();
+        request.open('GET', '../data/converter.json');
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send();
+
+        request.onload = () => {
+            const changes = JSON.parse(request.response);
+            switch (type) {
+                case 'som':
+                    targetElement.value = (element.value / changes.usd).toFixed(2);
+                    targetElement2.value = (element.value / changes.eur).toFixed(2);
+                    break;
+                case 'usd':
+                    targetElement.value = (element.value * changes.usd).toFixed(2);
+                    targetElement2.value = (element.value * changes.usd / changes.eur).toFixed(2);
+                    break;
+                case 'eur':
+                    targetElement.value = (element.value * changes.eur).toFixed(2);
+                    targetElement2.value = (element.value * changes.eur / changes.usd).toFixed(2);
+                    break;
+                default:
+                    break;
+            }
+            element.value === '' && (targetElement.value = targetElement2.value = '');
+        };
+    };
+};
+
+converter(somInput, usdInput, eurInput, 'som');
+converter(usdInput, somInput, eurInput, 'usd');
+converter(eurInput, somInput, usdInput, 'eur');

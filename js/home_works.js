@@ -95,6 +95,6 @@ buttonStop.addEventListener('click', () => {
 buttonReset.addEventListener('click', () => {
     num = 0;
     secondsS.innerHTML = num
-    clearInterval(intervalId)
+     clearInterval(intervalId)
     isRunning = false
 })
