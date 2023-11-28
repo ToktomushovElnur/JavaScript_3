@@ -103,8 +103,15 @@
     justify-content: space-around;
     align-items: center;
     padding: 10px;
+    //прокрутка
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
-
+.card h2 {
+    color: yellow;
+    font-size: 15px;
+}
 .card p {
     color: var(--orange);
     font-size: 20px;

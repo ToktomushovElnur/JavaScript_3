@@ -96,3 +96,43 @@ const converter = (element, targetElement, targetElement2, type) => {
 converter(somInput, usdInput, eurInput, 'som');
 converter(usdInput, somInput, eurInput, 'usd');
 converter(eurInput, somInput, usdInput, 'eur');
+
+
+
+//card switcher
+
+const card = document.querySelector('.card')
+const prev = document.querySelector('#btn-prev')
+const next = document.querySelector('#btn-next')
+
+let currentCard = 1
+
+function updateCard() {
+    fetch(`https://jsonplaceholder.typicode.com/posts/${currentCard}`)
+        .then(response => response.json())
+        .then(data => {
+            card.innerHTML = `
+                <span>${data.id}</span>
+                <h2>${data.title}</h2>
+                <p>${data.body}</p>
+            `
+        })
+        .catch(error => console.error('Error fetching data:', error))
+}
+updateCard()
+
+function updateCardNumberAndFetch(offset) {
+    currentCard += offset
+    if (currentCard < 1) {
+        currentCard = 100
+    } else if (currentCard > 100) {
+        currentCard = 1
+    }
+    updateCard()
+}
+prev.onclick = () => updateCardNumberAndFetch(-1)
+next.onclick = () => updateCardNumberAndFetch(1)
+
+
+
+
