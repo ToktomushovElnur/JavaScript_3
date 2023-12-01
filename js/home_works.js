@@ -40,15 +40,15 @@ gmail_button.addEventListener('click', ()=> {
  const moveChildBlock = ()=> {
      if (positionX < 449 && positionY === 0) {
          positionX++;
-         childBlock.style.left = `${positionX}px`;
+         childBlock.style.left = `${positionX}px`
          setTimeout(moveChildBlock,10)
      } else if (positionX >= 448 && positionY < 448) {
          positionY++;
-         childBlock.style.top = `${positionY}px`;
+         childBlock.style.top = `${positionY}px`
          setTimeout(moveChildBlock,10)
      } else if (positionX > 0) {
          positionX--;
-         childBlock.style.left = `${positionX}px`;
+         childBlock.style.left = `${positionX}px`
          setTimeout(moveChildBlock,10)
      } else if (positionY > 0) {
          positionY--
@@ -61,40 +61,65 @@ gmail_button.addEventListener('click', ()=> {
 
 //СЧЕТЧИК
 
-let num = 0 // для хранения текущего значения
-let intervalId // хранения идентификатора интервала
-let isRunning = false // отслеживания состояния счетчика
+let numSeconds = 0
+let numMilliseconds = 0
+let timeoutId
+let isRunning = false
 
+const minutes = document.querySelector('#minutesS')
 const secondsS = document.querySelector('#secondsS')
+const ml_secondsS = document.querySelector('#ml-secondsS')
+
 const buttonStart = document.querySelector('#start')
 const buttonStop = document.querySelector('#stop')
 const buttonReset = document.querySelector('#reset')
 
+function updateDisplay() {
+    const paddedMinutes = String(Math.floor(numSeconds / 60)).padStart(2, '0')
+    const paddedSeconds = String(numSeconds % 60).padStart(2, '0')
+    const paddedMilliseconds = String(numMilliseconds).padStart(3, '0').slice(0, 2)
+
+    minutes.innerHTML = paddedMinutes
+    secondsS.innerHTML = paddedSeconds
+    ml_secondsS.innerHTML = paddedMilliseconds
+}
+
+async function startTimer() {
+    while (isRunning) {
+        await new Promise(resolve => {
+            timeoutId = setTimeout(() => {
+                numMilliseconds += 100
+                if (numMilliseconds === 1000) {
+                    numSeconds++;
+                    numMilliseconds = 0
+                }
+
+                updateDisplay()
+                resolve()
+            }, 100)
+        });
+    }
+}
+
 buttonStart.addEventListener('click', () => {
     if (!isRunning) {
-        // Запуск счетчика
-        intervalId = setInterval(() => {
-            num++
-            secondsS.innerHTML = num
-        }, 1000)
         isRunning = true
+        startTimer()
     }
-})
+});
 
-
-//Остановка счетчика
 buttonStop.addEventListener('click', () => {
     if (isRunning) {
-        clearInterval(intervalId)
+        clearTimeout(timeoutId)
         isRunning = false
     }
 })
 
-
-// Обнуление счетчика
 buttonReset.addEventListener('click', () => {
-    num = 0;
-    secondsS.innerHTML = num
-     clearInterval(intervalId)
+    numSeconds = 0
+    numMilliseconds = 0
+    updateDisplay()
+    clearTimeout(timeoutId)
     isRunning = false
 })
+

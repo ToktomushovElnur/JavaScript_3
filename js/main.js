@@ -76,7 +76,6 @@ prev.onclick = () => {
 
 autoSlider(index)
 
-//card SWITCHER
 
 
 
